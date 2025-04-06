@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Rathore's Homeopathy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .license-banner {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            padding: 8px 15px;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .license-banner.trial {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+        
+        .license-banner.activated {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+        }
+        
+        .license-banner a {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        
+        .license-banner a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if license_status.status == 'trial' %}
+        <div class="license-banner trial">
+            <span>
+                <i class="fas fa-hourglass-half"></i> Trial Version: {{ license_status.days_left }} days remaining
+            </span>
+            <a href="{{ url_for('license_page') }}">Activate Now</a>
+        </div>
+        {% elif license_status.status == 'activated' %}
+        <div class="license-banner activated">
+            <span>
+                <i class="fas fa-check-circle"></i> Licensed Version
+            </span>
+            <a href="{{ url_for('license_page') }}">View License</a>
+        </div>
+        {% endif %}
+        
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-leaf clinic-logo"></i>
+            </div>
+            <div class="title-container">
+                <h1><i class="fas fa-mortar-pestle"></i> Dr. Rathore's Homeopathy</h1>
+                <p class="tagline"><i class="fas fa-heart"></i> HEALING WITH HUMANITY & CARE <i class="fas fa-heart"></i></p>
+            </div>
+            <div class="decoration-container">
+                <i class="fas fa-flask-vial"></i>
+            </div>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search patients by name or ID...">
+                <button id="search-button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="new-patient">New Patient</button>
+            <button class="tab-button" data-tab="patient-list">Patient List</button>
+            <button class="tab-button" data-tab="patient-details">Patient Details</button>
+            <button class="tab-button" data-tab="add-visit">Add Visit</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- New Patient Form -->
+            <div class="tab-pane active" id="new-patient">
+                <h2><i class="fas fa-user-plus"></i> New Patient Registration</h2>
+                <form id="patient-form">
+                    <div class="form-group">
+                        <label for="name">Patient Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor">Doctor:</label>
+                        <select id="doctor" name="doctor" required>
+                            <option value="">Select Doctor</option>
+                            <option value="Dr. Rashmi Singh Rathore">Dr. Rashmi Singh Rathore</option>
+                            <option value="Dr. Omkesh Singh Rathore">Dr. Omkesh Singh Rathore</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medical_reports">Medical Reports:</label>
+                        <textarea id="medical_reports" name="medical_reports" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prescription">Prescription:</label>
+                        <textarea id="prescription" name="prescription" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recommended_consumption">Recommended to Consume:</label>
+                        <textarea id="recommended_consumption" name="recommended_consumption" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="not_recommended_consumption">Not Recommended to Consume:</label>
+                        <textarea id="not_recommended_consumption" name="not_recommended_consumption" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recommended_tests">Recommended Tests:</label>
+                        <textarea id="recommended_tests" name="recommended_tests" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Register Patient</button>
+                        <button type="reset" class="btn-secondary"><i class="fas fa-undo"></i> Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Patient List -->
+            <div class="tab-pane" id="patient-list">
+                <h2><i class="fas fa-users"></i> Patient List</h2>
+                <div class="patient-list-container">
+                    <table id="patient-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Doctor</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patient-list">
+                            <!-- Patient list will be populated here -->
+                        </tbody>
+                    </table>
+                    <div id="no-patients-message" class="hidden">
+                        <p>No patients found. Please add a new patient.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Details -->
+            <div class="tab-pane" id="patient-details">
+                <h2><i class="fas fa-user-md"></i> Patient Details</h2>
+                <div id="patient-details-container">
+                    <!-- Patient details will be displayed here -->
+                    <div class="no-patient-selected">
+                        <p>Please select a patient from the list or search results to view details.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Visit Form -->
+            <div class="tab-pane" id="add-visit">
+                <h2><i class="fas fa-notes-medical"></i> Add New Visit</h2>
+                <div class="patient-selector">
+                    <label for="visit-patient-id">Select Patient:</label>
+                    <select id="visit-patient-id" required>
+                        <option value="">-- Select a patient --</option>
+                        <!-- Patient options will be populated dynamically -->
+                    </select>
+                </div>
+                <div id="visit-form-container" class="hidden">
+                    <form id="visit-form">
+                        <input type="hidden" id="visit-patient-id-hidden" name="patient_id">
+                        
+                        <div class="form-group">
+                            <label for="visit-doctor">Doctor:</label>
+                            <select id="visit-doctor" name="doctor" required>
+                                <option value="">Select Doctor</option>
+                                <option value="Dr. Rashmi Singh Rathore">Dr. Rashmi Singh Rathore</option>
+                                <option value="Dr. Omkesh Singh Rathore">Dr. Omkesh Singh Rathore</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visit-medical-reports">Medical Reports:</label>
+                            <textarea id="visit-medical-reports" name="medical_reports" rows="4"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visit-prescription">Prescription:</label>
+                            <textarea id="visit-prescription" name="prescription" rows="4"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visit-recommended-consumption">Recommended to Consume:</label>
+                            <textarea id="visit-recommended-consumption" name="recommended_consumption" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visit-not-recommended-consumption">Not Recommended to Consume:</label>
+                            <textarea id="visit-not-recommended-consumption" name="not_recommended_consumption" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visit-recommended-tests">Recommended Tests:</label>
+                            <textarea id="visit-recommended-tests" name="recommended_tests" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Add Visit</button>
+                            <button type="reset" class="btn-secondary"><i class="fas fa-undo"></i> Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-mortar-pestle"></i> Dr. Rathore's Homeopathy
+            </div>
+            <p class="footer-tagline">HEALING WITH HUMANITY & CARE</p>
+            <p>&copy; 2025 Dr. Rathore's Homeopathy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

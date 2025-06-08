@@ -328,16 +328,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <p>${visit.prescription || 'No prescription available'}</p>
                                 </div>
                                 <div class="visit-section">
-                                    <h5>Recommended to Consume:</h5>
-                                    <p>${visit.recommended_consumption || 'No recommendations available'}</p>
+                                    <h5>Advice:</h5>
+                                    <p>${visit.advice || 'No recommendations available'}</p>
                                 </div>
                                 <div class="visit-section">
-                                    <h5>Not Recommended to Consume:</h5>
-                                    <p>${visit.not_recommended_consumption || 'No restrictions specified'}</p>
-                                </div>
-                                <div class="visit-section">
-                                    <h5>Recommended Tests:</h5>
-                                    <p>${visit.recommended_tests || 'No tests recommended'}</p>
+                                    <h5>Tests:</h5>
+                                    <p>${visit.tests || 'No tests recommended'}</p>
                                 </div>
                             </div>
                         </div>
@@ -369,18 +365,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 
                 <div class="patient-detail-section">
-                    <h4><i class="fas fa-check-circle"></i> Recommended to Consume</h4>
-                    <p>${patient.recommended_consumption || 'No recommendations available'}</p>
+                    <h4><i class="fas fa-check-circle"></i> Advice</h4>
+                    <p>${patient.advice || 'No recommendations available'}</p>
                 </div>
                 
                 <div class="patient-detail-section">
-                    <h4><i class="fas fa-times-circle"></i> Not Recommended to Consume</h4>
-                    <p>${patient.not_recommended_consumption || 'No restrictions specified'}</p>
-                </div>
-                
-                <div class="patient-detail-section">
-                    <h4><i class="fas fa-vial"></i> Recommended Tests</h4>
-                    <p>${patient.recommended_tests || 'No tests recommended'}</p>
+                    <h4><i class="fas fa-vial"></i>Tests</h4>
+                    <p>${patient.tests || 'No tests recommended'}</p>
                 </div>
                 
                 <div class="patient-detail-section">

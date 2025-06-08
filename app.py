@@ -125,9 +125,8 @@ def add_patient():
         'doctor': request.form.get('doctor', ''),
         'medical_reports': request.form.get('medical_reports', ''),
         'prescription': request.form.get('prescription', ''),
-        'recommended_consumption': request.form.get('recommended_consumption', ''),
-        'not_recommended_consumption': request.form.get('not_recommended_consumption', ''),
-        'recommended_tests': request.form.get('recommended_tests', ''),
+        'advice': request.form.get('advice', ''),
+        'tests': request.form.get('tests', ''),
         'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'visits': []  # Initialize visits array for new patients
     }
@@ -159,9 +158,8 @@ def add_visit(patient_id):
                 'doctor': request.form.get('doctor', ''),
                 'medical_reports': request.form.get('medical_reports', ''),
                 'prescription': request.form.get('prescription', ''),
-                'recommended_consumption': request.form.get('recommended_consumption', ''),
-                'not_recommended_consumption': request.form.get('not_recommended_consumption', ''),
-                'recommended_tests': request.form.get('recommended_tests', '')
+                'advice': request.form.get('recommended_consumption', ''),
+                'tests': request.form.get('tests', '')
             }
             
             # Initialize visits array if it doesn't exist

@@ -32,12 +32,24 @@ def save_patients(patients):
     with open(PATIENTS_DB, 'w') as f:
         json.dump(patients, f, indent=4)
 
+def count_entry():
+    try:
+        with open("data/patients.json", "r") as file:
+            data = json.load(file)
+        return len(data)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return 0
+
 def generate_patient_id():
-    """Generate a unique patient ID."""
-    # Format: PT-YYYYMMDD-XXXX where XXXX is a random string
-    date_part = datetime.now().strftime("%Y%m%d")
-    random_part = str(uuid.uuid4())[:4].upper()
-    return f"PT-{date_part}-{random_part}"
+    """
+    Generate a unique patient ID in the format:
+    PT-0001:01-01-2025:1CFF
+    """
+    count = count_entry()
+    count_part = f"{count:04d}"
+    date_part = datetime.now().strftime("%d-%m-%Y")
+    random_part = uuid.uuid4().hex[:4].upper()
+    return f"PT-{count_part}:{date_part}:{random_part}"
 
 @app.route('/')
 def index():
@@ -103,10 +115,28 @@ def search_patients():
         # Search in patient ID, name, and other fields
         if (query in patient.get('id', '').lower() or 
             query in patient.get('name', '').lower() or
-            query in patient.get('medical_reports', '').lower()):
+            query in patient.get('phone', '').lower()):
             results.append(patient)
     
     return jsonify(results)
+
+@app.route('/autocomplete')
+def autocomplete():
+    query = request.args.get("q", "").lower()
+    data = load_patients()
+    results = set()
+
+    for entry in data:
+        for field in [entry["name"], entry["phone"]]:
+            if field.lower().startswith(query):
+                results.add(field)
+    
+    for entry in data:
+        for field in [entry["name"], entry["phone"]]:
+            if query in field.lower() and not field.lower().startswith(query):
+                results.add(field)
+    
+    return jsonify(sorted(results))
 
 @app.route('/patients', methods=['POST'])
 def add_patient():
@@ -122,6 +152,7 @@ def add_patient():
     new_patient = {
         'id': generate_patient_id(),
         'name': request.form.get('name', ''),
+        'phone': request.form.get('phone', ''),
         'doctor': request.form.get('doctor', ''),
         'medical_reports': request.form.get('medical_reports', ''),
         'prescription': request.form.get('prescription', ''),

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const patientList = document.getElementById('patient-list');
     const patientDetailsContainer = document.getElementById('patient-details-container');
     const searchInput = document.getElementById('search-input');
+    const suggestions = document.getElementById("suggestions");
     const searchButton = document.getElementById('search-button');
     const noPatientMessage = document.getElementById('no-patients-message');
     const visitPatientSelect = document.getElementById('visit-patient-id');
@@ -40,6 +41,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return response.json();
     }
+
+    //Auto-Complete function
+    searchInput.addEventListener("input", async () => {
+        const query = searchInput.value.trim();
+        if (query.length === 0) {
+        suggestions.innerHTML = "";
+        return;
+        }
+
+        const res = await fetch(`/autocomplete?q=${query}`);
+        const data = await res.json();
+
+        suggestions.innerHTML = "";
+        data.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        li.addEventListener("click", () => {
+            searchInput.value = item;
+            suggestions.innerHTML = "";
+        });
+        suggestions.appendChild(li);
+        });
+    });
 
     // Tab Switching
     tabButtons.forEach(button => {
@@ -348,7 +372,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h3>${patient.name}</h3>
                     <span class="patient-id">ID: ${patient.id}</span>
                 </div>
-                
+
+                <div class="patient-detail-section">
+                    <h4><i class="fas fa-phone"></i> Phone</h4>
+                    <p>${patient.phone || 'Not specified'}</p>
+                </div>                
+
                 <div class="patient-detail-section">
                     <h4><i class="fas fa-user-md"></i> Doctor</h4>
                     <p>${patient.doctor || 'Not specified'}</p>

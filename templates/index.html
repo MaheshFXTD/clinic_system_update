@@ -75,6 +75,7 @@
                 <input type="text" id="search-input" placeholder="Search patients by name or ID...">
                 <button id="search-button"><i class="fas fa-search"></i></button>
             </div>
+            <ul id="suggestions"></ul>
         </div>
 
         <div class="tabs">
@@ -94,6 +95,11 @@
                         <input type="text" id="name" name="name" required>
                     </div>
                     
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="Enter 10-digit phone number" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="doctor">Doctor:</label>
                         <select id="doctor" name="doctor" required>

@@ -46,23 +46,30 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener("input", async () => {
         const query = searchInput.value.trim();
         if (query.length === 0) {
-        suggestions.innerHTML = "";
-        return;
+            suggestions.innerHTML = "";
+            suggestions.style.display = "none";
+            return;
         }
 
         const res = await fetch(`/autocomplete?q=${query}`);
         const data = await res.json();
 
         suggestions.innerHTML = "";
-        data.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        li.addEventListener("click", () => {
-            searchInput.value = item;
-            suggestions.innerHTML = "";
-        });
-        suggestions.appendChild(li);
-        });
+        if (data.length > 0) {
+            suggestions.style.display = "block";
+            data.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.addEventListener("click", () => {
+                    searchInput.value = item;
+                    suggestions.innerHTML = "";
+                    suggestions.style.display = "none";
+                });
+                suggestions.appendChild(li);
+            });
+        } else {
+            suggestions.style.display = "none"; //
+        }
     });
 
     // Tab Switching
@@ -442,4 +449,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial load
     loadPatients();
-}); 
+});
